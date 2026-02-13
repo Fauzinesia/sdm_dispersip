@@ -221,7 +221,6 @@ $total = mysqli_num_rows($result);
             <tr>
                 <th width="3%">No</th>
                 <th width="10%">Tanggal</th>
-                <th width="12%">NIP</th>
                 <th width="20%">Nama Pegawai</th>
                 <th width="18%">Jabatan</th>
                 <th width="8%">Jam Masuk</th>
@@ -239,7 +238,6 @@ $total = mysqli_num_rows($result);
                     echo '<tr>';
                     echo '<td class="text-center">' . $no++ . '</td>';
                     echo '<td class="text-center">' . date('d/m/Y', strtotime($row['tanggal'])) . '</td>';
-                    echo '<td>' . htmlspecialchars($row['nip'] ?? '-') . '</td>';
                     echo '<td>' . htmlspecialchars($row['nama_lengkap']) . '</td>';
                     echo '<td>' . htmlspecialchars($row['nama_jabatan'] ?? '-') . '</td>';
                     echo '<td class="text-center">' . ($row['jam_masuk'] ? date('H:i', strtotime($row['jam_masuk'])) : '-') . '</td>';
