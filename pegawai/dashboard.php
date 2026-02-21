@@ -100,13 +100,12 @@ include '../includes/navbar.php';
             </div>
 
             <?php
-            // Get pegawai data for absensi quick access
             $pegawai_id = $_SESSION['pegawai_id'] ?? 0;
             $can_absen = false;
             $today_absensi = null;
+            $today_work_duration = '-';
             
             if ($pegawai_id) {
-                // Check status kepegawaian
                 $stmt = mysqli_prepare($koneksi, "SELECT status_kepegawaian FROM pegawai WHERE pegawai_id = ?");
                 mysqli_stmt_bind_param($stmt, 'i', $pegawai_id);
                 mysqli_stmt_execute($stmt);
@@ -116,13 +115,29 @@ include '../includes/navbar.php';
                 $allowed_status = ['Honorer', 'Kontrak'];
                 $can_absen = in_array($pegawai_data['status_kepegawaian'] ?? '', $allowed_status);
                 
-                // Get today's absensi
                 $today = date('Y-m-d');
                 $stmt = mysqli_prepare($koneksi, "SELECT * FROM absensi WHERE pegawai_id=? AND tanggal=?");
                 mysqli_stmt_bind_param($stmt, 'is', $pegawai_id, $today);
                 mysqli_stmt_execute($stmt);
                 $today_absensi = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
                 mysqli_stmt_close($stmt);
+                
+                if ($today_absensi && !empty($today_absensi['jam_masuk']) && !empty($today_absensi['jam_pulang'])) {
+                    $start = strtotime($today_absensi['jam_masuk']);
+                    $end = strtotime($today_absensi['jam_pulang']);
+                    if ($start && $end && $end > $start) {
+                        $diff = $end - $start;
+                        $hours = floor($diff / 3600);
+                        $minutes = floor(($diff % 3600) / 60);
+                        if ($hours > 0 && $minutes > 0) {
+                            $today_work_duration = $hours . ' jam ' . $minutes . ' menit';
+                        } elseif ($hours > 0) {
+                            $today_work_duration = $hours . ' jam';
+                        } elseif ($minutes > 0) {
+                            $today_work_duration = $minutes . ' menit';
+                        }
+                    }
+                }
             }
             ?>
 
@@ -145,6 +160,10 @@ include '../includes/navbar.php';
                                                 <div>
                                                     <small class="text-white-50">Jam Pulang</small>
                                                     <p class="mb-0 fw-bold"><?php echo date('H:i', strtotime($today_absensi['jam_pulang'])); ?></p>
+                                                </div>
+                                                <div>
+                                                    <small class="text-white-50">Total Jam Kerja</small>
+                                                    <p class="mb-0 fw-bold"><?php echo $today_work_duration; ?></p>
                                                 </div>
                                             <?php else: ?>
                                                 <div>

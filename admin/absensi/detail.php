@@ -34,6 +34,28 @@ $badgeMap = [
     'Cuti' => 'primary'
 ];
 $badge = $badgeMap[$data['status_absensi']] ?? 'secondary';
+
+function calculateWorkDuration($jam_masuk, $jam_pulang) {
+    if (!$jam_masuk || !$jam_pulang) {
+        return '-';
+    }
+    $start = strtotime($jam_masuk);
+    $end = strtotime($jam_pulang);
+    if (!$start || !$end || $end <= $start) {
+        return '-';
+    }
+    $diff = $end - $start;
+    $hours = floor($diff / 3600);
+    $minutes = floor(($diff % 3600) / 60);
+    if ($hours > 0 && $minutes > 0) {
+        return $hours . ' jam ' . $minutes . ' menit';
+    } elseif ($hours > 0) {
+        return $hours . ' jam';
+    } elseif ($minutes > 0) {
+        return $minutes . ' menit';
+    }
+    return '-';
+}
 ?>
 <div class="page-container">
     <div class="page-content">
@@ -65,15 +87,19 @@ $badge = $badgeMap[$data['status_absensi']] ?? 'secondary';
                             <label class="form-label text-muted">Tanggal</label>
                             <p class="fw-semibold"><?php echo date('d F Y', strtotime($data['tanggal'])); ?></p>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label class="form-label text-muted">Jam Masuk</label>
                             <p class="fw-semibold"><?php echo $data['jam_masuk'] ? date('H:i', strtotime($data['jam_masuk'])) : '-'; ?></p>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label class="form-label text-muted">Jam Pulang</label>
                             <p class="fw-semibold"><?php echo $data['jam_pulang'] ? date('H:i', strtotime($data['jam_pulang'])) : '-'; ?></p>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
+                            <label class="form-label text-muted">Total Jam Kerja</label>
+                            <p class="fw-semibold"><?php echo calculateWorkDuration($data['jam_masuk'], $data['jam_pulang']); ?></p>
+                        </div>
+                        <div class="col-md-3">
                             <label class="form-label text-muted">Status</label>
                             <p><span class="badge bg-<?php echo $badge; ?> fs-6"><?php echo htmlspecialchars($data['status_absensi']); ?></span></p>
                         </div>

@@ -61,6 +61,28 @@ function uploadBase64Image($base64_string, $type, $pegawai_id) {
     return null;
 }
 
+function calculateWorkDuration($jam_masuk, $jam_pulang) {
+    if (!$jam_masuk || !$jam_pulang) {
+        return '-';
+    }
+    $start = strtotime($jam_masuk);
+    $end = strtotime($jam_pulang);
+    if (!$start || !$end || $end <= $start) {
+        return '-';
+    }
+    $diff = $end - $start;
+    $hours = floor($diff / 3600);
+    $minutes = floor(($diff % 3600) / 60);
+    if ($hours > 0 && $minutes > 0) {
+        return $hours . ' jam ' . $minutes . ' menit';
+    } elseif ($hours > 0) {
+        return $hours . ' jam';
+    } elseif ($minutes > 0) {
+        return $minutes . ' menit';
+    }
+    return '-';
+}
+
 // Helper function: Check if today is a working day
 function isWorkingDay($koneksi, $date = null) {
     if (!$date) $date = date('Y-m-d');
@@ -320,12 +342,13 @@ include '../includes/navbar.php';
                                 <h5 id="currentTime"><?php echo date('H:i:s'); ?></h5>
                             </div>
                             
-                            <?php if ($today_absensi): ?>
+                                <?php if ($today_absensi): ?>
                                 <div class="alert alert-success">
                                     <h6><i class="ti ti-check-circle me-1"></i>Sudah Absen Hari Ini</h6>
                                     <p class="mb-1"><strong>Jam Masuk:</strong> <?php echo date('H:i', strtotime($today_absensi['jam_masuk'])); ?></p>
                                     <?php if ($today_absensi['jam_pulang']): ?>
                                         <p class="mb-1"><strong>Jam Pulang:</strong> <?php echo date('H:i', strtotime($today_absensi['jam_pulang'])); ?></p>
+                                        <p class="mb-1"><strong>Total Jam Kerja:</strong> <?php echo calculateWorkDuration($today_absensi['jam_masuk'], $today_absensi['jam_pulang']); ?></p>
                                         <span class="badge bg-success">✓ Absensi Lengkap</span>
                                     <?php else: ?>
                                         <p class="mb-0 text-warning"><strong>Belum absen pulang</strong></p>
@@ -446,6 +469,7 @@ include '../includes/navbar.php';
                                     <th>Tanggal</th>
                                     <th>Jam Masuk</th>
                                     <th>Jam Pulang</th>
+                                    <th>Total Jam Kerja</th>
                                     <th>Status</th>
                                     <th>Keterangan</th>
                                 </tr>
@@ -469,12 +493,13 @@ include '../includes/navbar.php';
                                         echo '<td>' . date('d/m/Y', strtotime($row['tanggal'])) . '</td>';
                                         echo '<td>' . ($row['jam_masuk'] ? date('H:i', strtotime($row['jam_masuk'])) : '-') . '</td>';
                                         echo '<td>' . ($row['jam_pulang'] ? date('H:i', strtotime($row['jam_pulang'])) : '<span class="text-muted">-</span>') . '</td>';
+                                        echo '<td>' . htmlspecialchars(calculateWorkDuration($row['jam_masuk'], $row['jam_pulang'])) . '</td>';
                                         echo '<td><span class="badge bg-' . $badge . '">' . htmlspecialchars($row['status_absensi']) . '</span></td>';
                                         echo '<td>' . htmlspecialchars($row['keterangan'] ?? '-') . '</td>';
                                         echo '</tr>';
                                     }
                                 } else {
-                                    echo '<tr><td colspan="6" class="text-center">Belum ada riwayat absensi</td></tr>';
+                                    echo '<tr><td colspan="7" class="text-center">Belum ada riwayat absensi</td></tr>';
                                 }
                                 ?>
                             </tbody>

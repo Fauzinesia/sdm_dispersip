@@ -7,6 +7,28 @@ $page_title = "Data Absensi";
 include '../../includes/header.php';
 include '../../includes/sidebar.php';
 include '../../includes/navbar.php';
+
+function calculateWorkDuration($jam_masuk, $jam_pulang) {
+    if (!$jam_masuk || !$jam_pulang) {
+        return '-';
+    }
+    $start = strtotime($jam_masuk);
+    $end = strtotime($jam_pulang);
+    if (!$start || !$end || $end <= $start) {
+        return '-';
+    }
+    $diff = $end - $start;
+    $hours = floor($diff / 3600);
+    $minutes = floor(($diff % 3600) / 60);
+    if ($hours > 0 && $minutes > 0) {
+        return $hours . ' jam ' . $minutes . ' menit';
+    } elseif ($hours > 0) {
+        return $hours . ' jam';
+    } elseif ($minutes > 0) {
+        return $minutes . ' menit';
+    }
+    return '-';
+}
 ?>
 
 <div class="page-container">
@@ -164,6 +186,7 @@ include '../../includes/navbar.php';
                                         <th><a class="link-reset" href="admin/absensi/absensi.php?sort=nama_lengkap&order=<?php echo ($sort==='nama_lengkap' && $order==='ASC')?'desc':'asc'; ?>">Nama Pegawai<?php echo $sort==='nama_lengkap' ? ($order==='ASC'?' ▲':' ▼') : ''; ?></a></th>
                                         <th><a class="link-reset" href="admin/absensi/absensi.php?sort=jam_masuk&order=<?php echo ($sort==='jam_masuk' && $order==='ASC')?'desc':'asc'; ?>">Jam Masuk<?php echo $sort==='jam_masuk' ? ($order==='ASC'?' ▲':' ▼') : ''; ?></a></th>
                                         <th><a class="link-reset" href="admin/absensi/absensi.php?sort=jam_pulang&order=<?php echo ($sort==='jam_pulang' && $order==='ASC')?'desc':'asc'; ?>">Jam Pulang<?php echo $sort==='jam_pulang' ? ($order==='ASC'?' ▲':' ▼') : ''; ?></a></th>
+                                        <th>Total Jam Kerja</th>
                                         <th><a class="link-reset" href="admin/absensi/absensi.php?sort=status_absensi&order=<?php echo ($sort==='status_absensi' && $order==='ASC')?'desc':'asc'; ?>">Status<?php echo $sort==='status_absensi' ? ($order==='ASC'?' ▲':' ▼') : ''; ?></a></th>
                                         <th>Keterangan</th>
                                         <th>Aksi</th>
@@ -196,6 +219,7 @@ include '../../includes/navbar.php';
                                                 '<td>' . htmlspecialchars($row['nama_lengkap']) . '</td>' .
                                                 '<td>' . ($row['jam_masuk'] ? date('H:i', strtotime($row['jam_masuk'])) : '-') . '</td>' .
                                                 '<td>' . ($row['jam_pulang'] ? date('H:i', strtotime($row['jam_pulang'])) : '-') . '</td>' .
+                                                '<td>' . htmlspecialchars(calculateWorkDuration($row['jam_masuk'], $row['jam_pulang'])) . '</td>' .
                                                 '<td><span class="badge bg-' . $badge . '">' . htmlspecialchars($status) . '</span></td>' .
                                                 '<td>' . htmlspecialchars($keterangan) . '</td>' .
                                                 '<td>' .
@@ -206,7 +230,7 @@ include '../../includes/navbar.php';
                                             '</tr>';
                                         }
                                     } else {
-                                        echo '<tr><td colspan="10" class="text-center">Tidak ada data</td></tr>';
+                                        echo '<tr><td colspan="11" class="text-center">Tidak ada data</td></tr>';
                                     }
                                     ?>
                                 </tbody>
