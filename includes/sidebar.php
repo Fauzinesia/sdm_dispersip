@@ -80,6 +80,12 @@
                 </a>
             </li>
             <li class="side-nav-item">
+                <a href="admin/absensi/verif_logbook.php" class="side-nav-link">
+                    <span class="menu-icon"><i class="ti ti-book"></i></span>
+                    <span class="menu-text"> Verifikasi Logbook </span>
+                </a>
+            </li>
+            <li class="side-nav-item">
                 <a href="admin/hari_libur/hari_libur.php" class="side-nav-link">
                     <span class="menu-icon"><i class="ti ti-calendar-off"></i></span>
                     <span class="menu-text"> Hari Libur </span>
@@ -155,6 +161,12 @@
                 </a>
             </li>
             <li class="side-nav-item">
+                <a href="pegawai/logbook.php" class="side-nav-link">
+                    <span class="menu-icon"><i class="ti ti-book"></i></span>
+                    <span class="menu-text"> Logbook Harian </span>
+                </a>
+            </li>
+            <li class="side-nav-item">
                 <a href="pegawai/penilaian_kinerja.php" class="side-nav-link">
                     <span class="menu-icon"><i class="ti ti-chart-bar"></i></span>
                     <span class="menu-text"> Penilaian Kinerja </span>
@@ -198,6 +210,12 @@
                 <a href="verifikator/kenaikan_pangkat.php" class="side-nav-link">
                     <span class="menu-icon"><i class="ti ti-trending-up"></i></span>
                     <span class="menu-text"> Kenaikan Pangkat </span>
+                </a>
+            </li>
+            <li class="side-nav-item">
+                <a href="admin/absensi/verif_logbook.php" class="side-nav-link">
+                    <span class="menu-icon"><i class="ti ti-book"></i></span>
+                    <span class="menu-text"> Verifikasi Logbook </span>
                 </a>
             </li>
             <li class="side-nav-item">

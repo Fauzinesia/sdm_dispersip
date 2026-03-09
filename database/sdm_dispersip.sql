@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jan 10, 2026 at 09:06 AM
+-- Generation Time: Mar 09, 2026 at 12:47 AM
 -- Server version: 8.0.30
--- PHP Version: 8.1.10
+-- PHP Version: 8.4.16
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -104,7 +104,8 @@ CREATE TABLE `cuti` (
 
 INSERT INTO `cuti` (`cuti_id`, `pegawai_id`, `jenis_cuti`, `tgl_mulai`, `tgl_selesai`, `lama_hari`, `alasan`, `disposisi`, `alasan_ditolak`, `status`, `verifikator_user_id`, `verified_at`, `created_at`, `updated_at`) VALUES
 (6, 9, 'Tahunan', '2026-01-12', '2026-01-15', 4, 'Melakukan Cuti Tahunan', NULL, 'tes', 'Ditolak', 3, '2026-01-09 12:45:28', '2026-01-09 19:40:01', '2026-01-09 20:45:28'),
-(7, 12, 'Tahunan', '2026-01-14', '2026-01-16', 3, 'Tahunan', '', NULL, 'Disetujui', 4, '2026-01-09 13:21:11', '2026-01-09 20:49:21', '2026-01-09 21:21:11');
+(7, 12, 'Tahunan', '2026-01-14', '2026-01-16', 3, 'Tahunan', '', NULL, 'Disetujui', 4, '2026-01-09 13:21:11', '2026-01-09 20:49:21', '2026-01-09 21:21:11'),
+(8, 13, 'Tahunan', '2026-02-06', '2026-02-10', 3, 'Tahunan', 'Disetujui', NULL, 'Disetujui', 4, '2026-02-06 02:17:19', '2026-02-06 09:56:43', '2026-02-06 10:17:19');
 
 -- --------------------------------------------------------
 
@@ -215,6 +216,13 @@ CREATE TABLE `kenaikan_pangkat` (
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Dumping data for table `kenaikan_pangkat`
+--
+
+INSERT INTO `kenaikan_pangkat` (`kp_id`, `pegawai_id`, `pangkat_lama_id`, `pangkat_baru_id`, `nomor_sk`, `tanggal_sk`, `tmt`, `file_sk`, `created_at`) VALUES
+(2, 3, 11, 15, '012/DISPERSIP-BJM/2026', '2026-12-12', '2029-03-01', 'uploads/kp/sk_20260204_064604_e30502bc.pdf', '2026-02-04 14:46:04');
+
 -- --------------------------------------------------------
 
 --
@@ -241,7 +249,33 @@ CREATE TABLE `kgb` (
 
 INSERT INTO `kgb` (`kgb_id`, `pegawai_id`, `nomor_sk`, `tanggal_sk`, `tmt_mulai`, `gaji_lama`, `gaji_baru`, `jadwal_kgb_berikut`, `file_sk`, `status`, `created_at`) VALUES
 (1, 9, 'SK.208938294', '2024-11-28', '2025-11-28', '1200000.00', '2000000.00', '2025-11-28', 'uploads/kgb/sk_20251128_130456_1c2035c3.png', 'Disahkan', '2025-11-28 21:04:56'),
-(2, 12, '123/BJM/2026', '2026-01-08', '2026-01-09', '1200000.00', '1500000.00', '2026-01-09', NULL, 'Disahkan', '2026-01-09 21:11:29');
+(2, 12, '123/BJM/2026', '2026-01-08', '2026-01-09', '1200000.00', '1500000.00', '2026-01-09', 'uploads/kgb/sk_20260204_123053_77d48357.pdf', 'Disahkan', '2026-01-09 21:11:29');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `logbook`
+--
+
+CREATE TABLE `logbook` (
+  `logbook_id` int NOT NULL,
+  `pegawai_id` int NOT NULL,
+  `tanggal` date NOT NULL,
+  `kegiatan` text NOT NULL,
+  `hasil` text,
+  `status` enum('Pending','Disetujui','Ditolak') DEFAULT 'Pending',
+  `komentar_verifikator` text,
+  `verifikator_id` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `logbook`
+--
+
+INSERT INTO `logbook` (`logbook_id`, `pegawai_id`, `tanggal`, `kegiatan`, `hasil`, `status`, `komentar_verifikator`, `verifikator_id`, `created_at`, `updated_at`) VALUES
+(1, 2, '2026-03-09', 'melakukan ujicoba website', 'berhasil menambahkan logbook', 'Disetujui', 'bagus`', 3, '2026-03-09 00:42:52', '2026-03-09 00:43:16');
 
 -- --------------------------------------------------------
 
@@ -342,11 +376,12 @@ CREATE TABLE `pegawai` (
 
 INSERT INTO `pegawai` (`pegawai_id`, `user_id`, `nik`, `nip`, `nama_lengkap`, `jk`, `tgl_lahir`, `status_kepegawaian`, `jabatan_id`, `pangkat_id`, `tgl_mulai_kerja`, `alamat`, `status_aktif`, `tmt_pensiun`, `created_at`, `updated_at`) VALUES
 (2, 2, '6371012345678902', '199505052018032001', 'Siti Nurhaliza', 'P', '1995-05-05', 'PNS', 6, 10, '2018-03-01', 'Banjarmasin', 'Aktif', NULL, '2025-11-26 19:24:41', '2025-11-26 19:24:41'),
-(3, 3, '6371012345678903', '199203032016031002', 'Ahmad Yani', 'L', '1992-03-03', 'PNS', 5, 11, '2016-03-01', 'Banjarmasin', 'Aktif', NULL, '2025-11-26 19:24:41', '2025-11-26 19:24:41'),
+(3, 3, '6371012345678903', '199203032016031002', 'Ahmad Yani', 'L', '1992-03-03', 'PNS', 5, 15, '2016-03-01', 'Banjarmasin', 'Aktif', NULL, '2025-11-26 19:24:41', '2026-02-04 14:46:04'),
 (4, 4, '6371012345678901', '199001012015031001', 'Administrator Sistem', 'L', '1990-01-01', 'PNS', NULL, NULL, '2015-03-01', 'Banjarmasin', 'Aktif', NULL, '2025-11-26 19:27:16', '2025-11-26 19:27:16'),
-(9, 5, '6304041810990002', NULL, 'Ahmad Fauzi,S.Kom', 'L', '2025-01-01', 'PNS', 7, 13, '2025-12-31', 'bjm', 'Aktif', NULL, '2025-11-28 09:17:12', '2026-01-09 19:19:18'),
-(11, NULL, '6304041810980010', '423325363464325356', 'Ana Maulida', 'P', '1978-11-28', 'PNS', NULL, NULL, '2005-11-28', NULL, 'Pensiun', '2025-11-28', '2025-11-28 21:55:45', '2025-11-28 21:55:58'),
-(12, 6, '6167837813713919', '831318938917892424', 'NUR AZIZAH', 'P', '1999-10-18', 'Honorer', 7, 1, '2010-01-01', 'BANJARMASIN', 'Aktif', '2045-12-12', '2026-01-09 19:46:59', '2026-01-09 21:04:03');
+(9, 5, '6304041810990002', NULL, 'Ahmad Fauzi,S.Kom', 'L', '2025-01-01', 'Honorer', 7, 13, '2025-12-31', 'bjm', 'Aktif', NULL, '2025-11-28 09:17:12', '2026-02-06 09:43:04'),
+(12, 6, '6167837813713919', '831318938917892424', 'NUR AZIZAH', 'P', '1999-10-18', 'Honorer', 7, 1, '2010-01-01', 'BANJARMASIN', 'Aktif', '2045-12-12', '2026-01-09 19:46:59', '2026-01-09 21:04:03'),
+(13, 8, '3489348902089429', '202034893489020894', 'ANA DR', 'P', '1997-12-12', 'PNS', 7, 14, '2008-02-04', 'BANJARMASIN', 'Pensiun', '2026-02-04', '2026-02-04 14:39:52', '2026-02-06 09:56:03'),
+(14, NULL, '6304178938791289', '199823289392833333', 'Muhammad Haiqal Faiq Dzikri', 'L', '1998-01-01', 'PNS', 8, 7, '2008-01-01', 'Marabahan', 'Pensiun', '2026-02-11', '2026-02-11 11:53:22', '2026-02-11 11:53:58');
 
 -- --------------------------------------------------------
 
@@ -399,7 +434,8 @@ CREATE TABLE `pensiun` (
 --
 
 INSERT INTO `pensiun` (`pensiun_id`, `pegawai_id`, `jenis`, `nomor_sk`, `tanggal_sk`, `tmt`, `keterangan`, `file_sk`, `created_at`) VALUES
-(1, 11, 'BUP', 'SK.208938294dfd', '2025-11-29', '2025-11-28', NULL, NULL, '2025-11-28 22:15:34');
+(2, 13, 'BUP', '001/DISPERSIP-BJM/2026', '2026-02-04', '2026-02-04', NULL, 'uploads/pensiun/sk_20260204_064051_37c3ea2a.pdf', '2026-02-04 14:40:37'),
+(3, 14, 'Dini', '123/BJM/2026', '2026-02-11', '2026-02-11', 'wkwkwk', 'uploads/pensiun/sk_20260211_040239_e08faed0.png', '2026-02-11 12:02:39');
 
 -- --------------------------------------------------------
 
@@ -442,7 +478,8 @@ INSERT INTO `users` (`user_id`, `username`, `password`, `role`, `status`, `creat
 (3, 'verifikator1', '$2y$10$5dvUVyWWoqSA1fFZCHtA1ukxGetioJ6FEeW8Vi7IBRhUZCC9LjzkK', 'verifikator', 'Aktif', '2025-11-26 19:24:41', '2025-11-28 10:06:24'),
 (4, 'admin', '$2y$10$TXgrm/l/D./p9EkzR54QM.lYgu6yr2uGnSCleICPlY4aZlqh7Ffxm', 'admin', 'Aktif', '2025-11-26 19:27:16', '2025-11-26 19:27:16'),
 (5, 'coba', '$2y$10$CZkepLuQepyJ12RIKyhA8OvgWpTNTPgxJCwaAE8DC70kZV6bJaukO', 'pegawai', 'Aktif', '2025-11-28 22:31:24', '2025-11-28 22:31:40'),
-(6, 'azizah', '$2y$10$xg.eCRYLBybHrw1dcbkGbuvMLq4aRaJ8NK1uu2htbO6d10qcLX5ai', 'pegawai', 'Aktif', '2026-01-09 21:04:03', '2026-01-09 21:04:03');
+(6, 'azizah', '$2y$12$znqajbUJjFrMvTYR5OvzGOckwBj9NFEuDESMrumqlFpPoV9kO7bc6', 'pegawai', 'Aktif', '2026-01-09 21:04:03', '2026-02-12 21:37:14'),
+(8, 'ana', '$2y$12$zOVWvJThGOUemKgx93JbdeXqInG.8Cn8M2vZPIndIqiF9xBOmPm/e', 'pegawai', 'Aktif', '2026-02-06 09:56:03', '2026-02-06 09:56:03');
 
 --
 -- Indexes for dumped tables
@@ -505,6 +542,13 @@ ALTER TABLE `kenaikan_pangkat`
 --
 ALTER TABLE `kgb`
   ADD PRIMARY KEY (`kgb_id`),
+  ADD KEY `pegawai_id` (`pegawai_id`);
+
+--
+-- Indexes for table `logbook`
+--
+ALTER TABLE `logbook`
+  ADD PRIMARY KEY (`logbook_id`),
   ADD KEY `pegawai_id` (`pegawai_id`);
 
 --
@@ -580,7 +624,7 @@ ALTER TABLE `arsip_dokumen`
 -- AUTO_INCREMENT for table `cuti`
 --
 ALTER TABLE `cuti`
-  MODIFY `cuti_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `cuti_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `gaji`
@@ -598,13 +642,19 @@ ALTER TABLE `hari_libur`
 -- AUTO_INCREMENT for table `kenaikan_pangkat`
 --
 ALTER TABLE `kenaikan_pangkat`
-  MODIFY `kp_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `kp_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `kgb`
 --
 ALTER TABLE `kgb`
   MODIFY `kgb_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `logbook`
+--
+ALTER TABLE `logbook`
+  MODIFY `logbook_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `master_jabatan`
@@ -622,7 +672,7 @@ ALTER TABLE `master_pangkat`
 -- AUTO_INCREMENT for table `pegawai`
 --
 ALTER TABLE `pegawai`
-  MODIFY `pegawai_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `pegawai_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `penilaian_kinerja`
@@ -634,7 +684,7 @@ ALTER TABLE `penilaian_kinerja`
 -- AUTO_INCREMENT for table `pensiun`
 --
 ALTER TABLE `pensiun`
-  MODIFY `pensiun_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `pensiun_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `riwayat_jabatan`
@@ -646,7 +696,7 @@ ALTER TABLE `riwayat_jabatan`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Constraints for dumped tables
@@ -690,6 +740,12 @@ ALTER TABLE `kenaikan_pangkat`
 --
 ALTER TABLE `kgb`
   ADD CONSTRAINT `kgb_ibfk_1` FOREIGN KEY (`pegawai_id`) REFERENCES `pegawai` (`pegawai_id`);
+
+--
+-- Constraints for table `logbook`
+--
+ALTER TABLE `logbook`
+  ADD CONSTRAINT `logbook_ibfk_1` FOREIGN KEY (`pegawai_id`) REFERENCES `pegawai` (`pegawai_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `pegawai`
